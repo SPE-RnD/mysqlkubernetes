@@ -1,0 +1,36 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: application-db
+  namescape: graphql 
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: application-db
+  template:
+    metadata:
+      labels:
+        app: application-db
+    spec:
+      containers:
+      - name: application-db
+        image: calvinjo98/testgraphql:v3
+        ports:
+        - name: nodejs-port
+          containerPort: 3000
+        env:
+          - name: DB_HOST
+            value: database-service
+          - name: DB_USER
+            value: root
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-graphql
+                key: rootPassword
+          - name: DB_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: secret-graphql
+                key: database
